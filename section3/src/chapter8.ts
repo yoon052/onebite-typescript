@@ -39,21 +39,43 @@ function login(user: User) {
 /**
  * 서로소 유니온 타입 복습겸 한가지 더 사례
  */
-
-//비동기 작업의 결과를 처리하는 객체를 3가지로 표현
-
-//3가지 객체를 하나의 타입으로 표현해보자.
-type AsyncTask = {
-  state: 'LOADING' | 'FAILED' | 'SUCCESS';
-  error?: {
+type LoadingTask = {
+  state: 'LOADING';
+};
+type FailedTask = {
+  state: 'FAILED';
+  error: {
     message: string;
   };
-  response?: {
+};
+type SuccessTask = {
+  state: 'SUCCESS';
+  response: {
     data: string;
   };
 };
 
-function processResult(task: AsyncTask) {}
+type AsyncTask = LoadingTask | FailedTask | SuccessTask;
+
+// 로딩 중 -> 콘솔에 로딩중 출력
+// 실패 -> 실패 : 에러메시지를 출력
+// 성공 -> 성공 : 데이터를 출력
+function processResult(task: AsyncTask) {
+  switch (task.state) {
+    case 'LOADING': {
+      console.log('로딩 중');
+      break;
+    }
+    case 'FAILED': {
+      console.log(`에러 발생 : ${task.error.message}`);
+      break;
+    }
+    case 'SUCCESS': {
+      console.log(`성공 : ${task.response.data}`);
+      break;
+    }
+  }
+}
 
 const loading: AsyncTask = {
   state: 'LOADING',
